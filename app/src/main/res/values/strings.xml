@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">SberSchoolLesson19HWK</string>
+
+
+    <string name="loading">Загрузка…</string>
+    <string name="coords">Координаты:</string>
+    <string name="timezone">Таймзона:</string>
+    <string name="phone_code">Телефонный код:</string>
+
+    <string name="map_key">AIzaSyCNjT2O7JRS4dsXWE2924Q7xmWxAJTnuug</string>
+</resources>
