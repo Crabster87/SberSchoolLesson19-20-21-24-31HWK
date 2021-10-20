@@ -9,10 +9,21 @@ import io.reactivex.Single
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
+/**
+ * Класс View Model 1-ого экрана
+ * */
 class ListViewModel(application: Application) : AndroidViewModel(application) {
 
     var retrofitApi: RetrofitApi = RetrofitApi()
 
+    /**
+     * Метод единожды возвращает список 'List<CountryItem>' для
+     * асинхронной обработки кода используя при этом Kotlin
+     * Coroutines и обрабатывая исключения. Объект 'viewModelScope'
+     * отменяет привязку 'CoroutineScope' после уничтожения ViewModel
+     *
+     * @return Single<Response<List<CountryItem>>>
+     * */
     fun getCountryList(): Single<Response<List<CountryItem>>>{
         return Single.create{ subscriber ->
             viewModelScope.launch {

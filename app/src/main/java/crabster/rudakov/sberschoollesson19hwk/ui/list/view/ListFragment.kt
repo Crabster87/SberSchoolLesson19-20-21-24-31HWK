@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import crabster.rudakov.sberschoollesson19hwk.R
 import crabster.rudakov.sberschoollesson19hwk.ui.list.adapter.IListItemListener
@@ -24,6 +25,14 @@ class ListFragment : Fragment(), IListItemListener {
     private lateinit var mainActivity: MainActivity
     private lateinit var listViewModel: ListViewModel
 
+    /**
+     * Метод создаёт View данного фрагмента а также соотвествующую ViewModel
+     *
+     * @param inflater объект, создающий View из XML-Layout
+     * @param container контейнер фрагмента
+     * @param savedInstanceState ассоциативный массив-хранилище данных
+     * @return View
+     * */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,6 +46,10 @@ class ListFragment : Fragment(), IListItemListener {
         return view
     }
 
+    /**
+     * Метод осуществляет наблюдение за изменением статуса загрузки у
+     * ViewModel и в зависимости от значения устанавливает видимость View
+     * */
     private fun progressHandler() {
         mainActivity.mainViewModel.progress().observe(viewLifecycleOwner, {
             when (it) {
@@ -46,6 +59,12 @@ class ListFragment : Fragment(), IListItemListener {
         })
     }
 
+    /**
+     * Метод получает список стран у ViewModel и передаёт его RecyclerView,
+     * меняет статус прогресса выполнения загрузки, устанавливает разделители
+     * с помощью 'DividerItemDecoration', передаёт список стран и состояние
+     * прогресса во 'MainViewModel', обрабатывая исключения
+     * */
     @SuppressLint("CheckResult")
     fun getCountryList() {
         mainActivity.mainViewModel.setProgress(false)
@@ -56,6 +75,7 @@ class ListFragment : Fragment(), IListItemListener {
                 if (it.isSuccessful) {
                     recycler_view.layoutManager = LinearLayoutManager(this.context)
                     recycler_view.adapter = ListViewAdapter(it.body()!!, this)
+                    recycler_view.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
                     mainActivity.mainViewModel.setCountryList(it.body()!!)
                     mainActivity.mainViewModel.setProgress(true)
                 } else {
@@ -66,6 +86,13 @@ class ListFragment : Fragment(), IListItemListener {
             })
     }
 
+    /**
+     * Метод запускает действия после клика по значению списка пользователем:
+     * 1) получение страны по номеру позиции списка;
+     * 2) переход с 1-ого экрана на 2-ой экран
+     *
+     * @param position номер позиции в списке стран RecyclerView
+     * */
     override fun onMessageClick(position: Int) {
         mainActivity.mainViewModel.setSelectedCountry(position)
         mainActivity.navController.navigate(R.id.action_listFragment_to_countryFragment)

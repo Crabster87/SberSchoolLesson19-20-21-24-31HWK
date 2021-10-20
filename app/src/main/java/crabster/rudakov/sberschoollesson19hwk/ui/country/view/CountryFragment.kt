@@ -21,12 +21,23 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_country.*
 
-
+/**
+ * Класс, хранящий логику отобржаения данных на 2-ом экране,
+ * реализованном в виде фрагмента
+ * */
 class CountryFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mainActivity: MainActivity
     private lateinit var countryViewModel: CountryViewModel
 
+    /**
+     * Метод создаёт View фрагмента
+     *
+     * @param inflater объект, создающий View из XML-Layout
+     * @param container контейнер фрагмента
+     * @param savedInstanceState ассоциативный массив-хранилище данных
+     * @return View
+     * */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,12 +45,17 @@ class CountryFragment : Fragment(), OnMapReadyCallback {
         val view = inflater.inflate(R.layout.fragment_country, container, false)
         mainActivity = context as MainActivity
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         val factory = CountryViewModelFactory(mainActivity.application)
         countryViewModel = ViewModelProvider(this, factory).get(CountryViewModel::class.java)
 
+        /**
+         * Получение данных у ViewModel по названию страны
+         * @sample 'https://travelbriefing.org/Netherlands' -> Netherlands
+         * */
         mainActivity.mainViewModel.selectedCountry().observe(viewLifecycleOwner, {
             getCountry(it.url.split("/")[3])
         })
@@ -47,6 +63,12 @@ class CountryFragment : Fragment(), OnMapReadyCallback {
         return view
     }
 
+    /**
+     * Метод получает данные у ViewModel и производит наполнение всех View
+     * текущего фрагмента, обрабатывая исключения
+     *
+     * @param country название страны
+     * */
     @SuppressLint("CheckResult")
     private fun getCountry(country: String) {
         countryViewModel.getCountry(country)
@@ -66,8 +88,18 @@ class CountryFragment : Fragment(), OnMapReadyCallback {
 
                     countryViewModel.setCoordinates(coordinates)
 
-                    country_timezone.text = it.body()?.timezone?.name
-                    country_phone_code.text = it.body()?.telephone?.calling_code
+                    country_currency.text = it.body()?.currency?.name
+
+                    if (it.body()?.languageList?.size != 0)
+                        country_language.text = it.body()?.languageList?.get(0)?.language
+                    else country_language.text = "------"
+
+
+                    if (it.body()?.neighborsList?.size != 0)
+                        country_neighbors.text =
+                            it.body()?.neighborsList?.joinToString { it1 -> it1.name }
+                    else country_neighbors.text = "------"
+
                 } else {
                     mainActivity.mainViewModel.setException(it.errorBody().toString())
                 }
@@ -76,6 +108,16 @@ class CountryFragment : Fragment(), OnMapReadyCallback {
             })
     }
 
+    /**
+     * Метод получает координаты у ViewModel и устанавливает их
+     * на карте во фрагменте 'SupportMapFragment', отрисовывая
+     * маркер по заданным значениям. В качестве наблюдателя подписывается
+     * специальный объект 'viewLifecycleOwner', имеющий данные о lifeCycle
+     * View фрагмента.
+     * Метод moveCamera() моментально перемещает камеру на маркер
+     *
+     * @param googleMap объект GoogleMap
+     * */
     @SuppressLint("CheckResult")
     override fun onMapReady(googleMap: GoogleMap?) {
         countryViewModel.coordinates().observe(viewLifecycleOwner, {
