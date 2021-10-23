@@ -1,4 +1,4 @@
-# SberSchoolLesson19HWK & SberSchoolLesson20HWK & SberSchoolLesson21HWK
+# SberSchoolLesson19HWK & SberSchoolLesson20HWK
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 ## Лекция 19. MV* паттерны в Android(MVP/MVVM).
 
