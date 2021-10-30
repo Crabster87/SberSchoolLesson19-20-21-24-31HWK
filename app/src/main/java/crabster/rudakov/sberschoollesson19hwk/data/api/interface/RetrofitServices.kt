@@ -6,17 +6,19 @@ import crabster.rudakov.sberschoollesson19hwk.utils.Constants.LIST_URL
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
+import javax.inject.Singleton
 
 /**
  * Интерфейс, описывающий взаимодействие приложения(клиента) и API(сервера)
  * */
+@Singleton
 interface RetrofitServices {
 
     /**
-    * Метод получает список стран по указанному API
-    *
-    * @return список стран мира
-    * */
+     * Метод получает список стран по указанному API
+     *
+     * @return список стран мира
+     * */
     @GET(LIST_URL)
     suspend fun getCountryList(): Response<List<CountryItem>>
 

@@ -4,11 +4,13 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import crabster.rudakov.sberschoollesson19hwk.data.model.CountryItem
+import javax.inject.Inject
 
 /**
  * Класс View Model экрана главной Activity
  * */
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+class MainViewModel
+@Inject constructor(application: Application) : AndroidViewModel(application) {
 
     private var progress: MutableLiveData<Boolean> = MutableLiveData()
     private var countryList: MutableLiveData<List<CountryItem>> = MutableLiveData()

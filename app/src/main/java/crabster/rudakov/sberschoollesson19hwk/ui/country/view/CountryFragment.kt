@@ -2,7 +2,6 @@ package crabster.rudakov.sberschoollesson19hwk.ui.country.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,21 +13,29 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import crabster.rudakov.sberschoollesson19hwk.R
+import crabster.rudakov.sberschoollesson19hwk.data.di.factory.ViewModelFactory
 import crabster.rudakov.sberschoollesson19hwk.ui.country.viewModel.CountryViewModel
-import crabster.rudakov.sberschoollesson19hwk.ui.country.viewModel.CountryViewModelFactory
-import crabster.rudakov.sberschoollesson19hwk.ui.main.view.MainActivity
+import crabster.rudakov.sberschoollesson19hwk.ui.main.viewModel.MainViewModel
+import dagger.android.support.DaggerFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_country.*
+import javax.inject.Inject
 
 /**
  * Класс, хранящий логику отобржаения данных на 2-ом экране,
  * реализованном в виде фрагмента
  * */
-class CountryFragment : Fragment(), OnMapReadyCallback {
+class CountryFragment : DaggerFragment(), OnMapReadyCallback {
 
-    private lateinit var mainActivity: MainActivity
-    private lateinit var countryViewModel: CountryViewModel
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    private val mainViewModel: MainViewModel by lazy {
+        ViewModelProvider(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
+    }
+    private val countryViewModel: CountryViewModel by lazy {
+        ViewModelProvider(requireActivity(), viewModelFactory).get(CountryViewModel::class.java)
+    }
 
     /**
      * Метод создаёт View фрагмента
@@ -43,20 +50,15 @@ class CountryFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_country, container, false)
-        mainActivity = context as MainActivity
-
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
-
-        val factory = CountryViewModelFactory(mainActivity.application)
-        countryViewModel = ViewModelProvider(this, factory).get(CountryViewModel::class.java)
 
         /**
          * Получение данных у ViewModel по названию страны
          * @sample 'https://travelbriefing.org/Netherlands' -> Netherlands
          * */
-        mainActivity.mainViewModel.selectedCountry().observe(viewLifecycleOwner, {
+        mainViewModel.selectedCountry().observe(viewLifecycleOwner, {
             getCountry(it.url.split("/")[3])
         })
 
@@ -101,10 +103,10 @@ class CountryFragment : Fragment(), OnMapReadyCallback {
                     else country_neighbors.text = "------"
 
                 } else {
-                    mainActivity.mainViewModel.setException(it.errorBody().toString())
+                    mainViewModel.setException(it.errorBody().toString())
                 }
             }, {
-                it.message?.let { ex -> mainActivity.mainViewModel.setException(ex) }
+                it.message?.let { ex -> mainViewModel.setException(ex) }
             })
     }
 
@@ -123,6 +125,7 @@ class CountryFragment : Fragment(), OnMapReadyCallback {
         countryViewModel.coordinates().observe(viewLifecycleOwner, {
             googleMap?.apply {
                 val cord = LatLng(it[0].toDouble(), it[1].toDouble())
+                clear()
                 addMarker(
                     MarkerOptions()
                         .position(cord)

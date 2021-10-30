@@ -1,9 +1,7 @@
-
 package crabster.rudakov.sberschoollesson19hwk.ui.list.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,19 +9,32 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import crabster.rudakov.sberschoollesson19hwk.R
+import crabster.rudakov.sberschoollesson19hwk.data.di.factory.ViewModelFactory
 import crabster.rudakov.sberschoollesson19hwk.ui.list.adapter.IListItemListener
 import crabster.rudakov.sberschoollesson19hwk.ui.list.adapter.ListViewAdapter
 import crabster.rudakov.sberschoollesson19hwk.ui.list.viewModel.ListViewModel
-import crabster.rudakov.sberschoollesson19hwk.ui.list.viewModel.ListViewModelFactory
 import crabster.rudakov.sberschoollesson19hwk.ui.main.view.MainActivity
+import crabster.rudakov.sberschoollesson19hwk.ui.main.viewModel.MainViewModel
+import dagger.android.support.DaggerFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_list.*
+import javax.inject.Inject
 
-class ListFragment : Fragment(), IListItemListener {
+class ListFragment : DaggerFragment(), IListItemListener {
 
-    private lateinit var mainActivity: MainActivity
-    private lateinit var listViewModel: ListViewModel
+    private val mainActivity: MainActivity by lazy {
+        context as MainActivity
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    private val mainViewModel: MainViewModel by lazy {
+        ViewModelProvider(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
+    }
+    private val listViewModel: ListViewModel by lazy {
+        ViewModelProvider(requireActivity(), viewModelFactory).get(ListViewModel::class.java)
+    }
 
     /**
      * Метод создаёт View данного фрагмента а также соотвествующую ViewModel
@@ -38,9 +49,6 @@ class ListFragment : Fragment(), IListItemListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
-        mainActivity = context as MainActivity
-        val factory = ListViewModelFactory(activity?.application)
-        listViewModel = ViewModelProvider(this, factory).get(ListViewModel::class.java)
         getCountryList()
         progressHandler()
         return view
@@ -51,7 +59,7 @@ class ListFragment : Fragment(), IListItemListener {
      * ViewModel и в зависимости от значения устанавливает видимость View
      * */
     private fun progressHandler() {
-        mainActivity.mainViewModel.progress().observe(viewLifecycleOwner, {
+        mainViewModel.progress().observe(viewLifecycleOwner, {
             when (it) {
                 true -> progress_text_view.visibility = View.INVISIBLE
                 false -> progress_text_view.visibility = View.VISIBLE
@@ -67,7 +75,7 @@ class ListFragment : Fragment(), IListItemListener {
      * */
     @SuppressLint("CheckResult")
     fun getCountryList() {
-        mainActivity.mainViewModel.setProgress(false)
+        mainViewModel.setProgress(false)
         listViewModel.getCountryList()
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
@@ -75,14 +83,19 @@ class ListFragment : Fragment(), IListItemListener {
                 if (it.isSuccessful) {
                     recycler_view.layoutManager = LinearLayoutManager(this.context)
                     recycler_view.adapter = ListViewAdapter(it.body()!!, this)
-                    recycler_view.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
-                    mainActivity.mainViewModel.setCountryList(it.body()!!)
-                    mainActivity.mainViewModel.setProgress(true)
+                    recycler_view.addItemDecoration(
+                        DividerItemDecoration(
+                            requireContext(),
+                            DividerItemDecoration.VERTICAL
+                        )
+                    )
+                    mainViewModel.setCountryList(it.body()!!)
+                    mainViewModel.setProgress(true)
                 } else {
-                    mainActivity.mainViewModel.setException(it.errorBody().toString())
+                    mainViewModel.setException(it.errorBody().toString())
                 }
             }, {
-                it.message?.let { ex -> mainActivity.mainViewModel.setException(ex) }
+                it.message?.let { ex -> mainViewModel.setException(ex) }
             })
     }
 
@@ -94,7 +107,7 @@ class ListFragment : Fragment(), IListItemListener {
      * @param position номер позиции в списке стран RecyclerView
      * */
     override fun onMessageClick(position: Int) {
-        mainActivity.mainViewModel.setSelectedCountry(position)
+        mainViewModel.setSelectedCountry(position)
         mainActivity.navController.navigate(R.id.action_listFragment_to_countryFragment)
     }
 

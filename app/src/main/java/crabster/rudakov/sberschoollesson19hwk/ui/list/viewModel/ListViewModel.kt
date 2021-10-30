@@ -8,11 +8,13 @@ import crabster.rudakov.sberschoollesson19hwk.data.model.CountryItem
 import io.reactivex.Single
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import javax.inject.Inject
 
 /**
  * Класс View Model 1-ого экрана
  * */
-class ListViewModel(application: Application) : AndroidViewModel(application) {
+class ListViewModel
+@Inject constructor(application: Application) : AndroidViewModel(application) {
 
     var retrofitApi: RetrofitApi = RetrofitApi()
 

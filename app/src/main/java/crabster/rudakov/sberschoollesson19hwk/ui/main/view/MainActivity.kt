@@ -1,22 +1,30 @@
 package crabster.rudakov.sberschoollesson19hwk.ui.main.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import crabster.rudakov.sberschoollesson19hwk.R
+import crabster.rudakov.sberschoollesson19hwk.data.di.factory.ViewModelFactory
 import crabster.rudakov.sberschoollesson19hwk.ui.main.viewModel.MainViewModel
-import crabster.rudakov.sberschoollesson19hwk.ui.main.viewModel.MainViewModelFactory
+import dagger.android.support.DaggerAppCompatActivity
+import javax.inject.Inject
 
 /**
- * Класс Activity главного экрана
+ * Класс Activity главного экрана, наследуется от DaggerAppCompatActivity
+ * с целью отслеживания кода, который генерирует Dagger2
  * */
-class MainActivity : AppCompatActivity() {
+class MainActivity : DaggerAppCompatActivity() {
 
     lateinit var navController: NavController
-    lateinit var mainViewModel: MainViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    private val mainViewModel: MainViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
+    }
+
 
     /**
      * Метод создаёт View активити, а также создаёт 'ViewModel' и навигацию
@@ -25,14 +33,9 @@ class MainActivity : AppCompatActivity() {
      * @param savedInstanceState ассоциативный массив-хранилище данных
      * */
     override fun onCreate(savedInstanceState: Bundle?) {
-        val factory = MainViewModelFactory(application)
-        mainViewModel = ViewModelProvider(this, factory).get(MainViewModel::class.java)
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         navController = Navigation.findNavController(this, R.id.nav_host_fragment)
-
         displayException()
     }
 
