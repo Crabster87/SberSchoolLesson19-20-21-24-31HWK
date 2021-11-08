@@ -1,4 +1,4 @@
-package crabster.rudakov.sberschoollesson19hwk.data.di.module
+package crabster.rudakov.sberschoollesson19hwk.di.module
 
 import crabster.rudakov.sberschoollesson19hwk.ui.country.view.CountryFragment
 import crabster.rudakov.sberschoollesson19hwk.ui.list.view.ListFragment

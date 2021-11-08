@@ -13,7 +13,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import crabster.rudakov.sberschoollesson19hwk.R
-import crabster.rudakov.sberschoollesson19hwk.data.di.factory.ViewModelFactory
+import crabster.rudakov.sberschoollesson19hwk.ui.main.factory.ViewModelFactory
 import crabster.rudakov.sberschoollesson19hwk.ui.country.viewModel.CountryViewModel
 import crabster.rudakov.sberschoollesson19hwk.ui.main.viewModel.MainViewModel
 import dagger.android.support.DaggerFragment

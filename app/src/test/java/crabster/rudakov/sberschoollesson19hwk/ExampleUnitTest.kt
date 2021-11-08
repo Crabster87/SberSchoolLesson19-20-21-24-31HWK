@@ -22,7 +22,7 @@ class ExampleUnitTest {
     val rule = InstantTaskExecutorRule()
 
     private val app: Application = Mockito.mock(Application::class.java)
-    private val listViewModel = ListViewModel(app)
+    private val listViewModel = ListViewModel()
     private val mainViewModel = MainViewModel(app)
 
     @Before

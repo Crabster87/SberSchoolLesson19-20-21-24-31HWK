@@ -1,4 +1,4 @@
-package crabster.rudakov.sberschoollesson19hwk.data.di.module
+package crabster.rudakov.sberschoollesson19hwk.di.module
 
 import crabster.rudakov.sberschoollesson19hwk.ui.main.view.MainActivity
 import dagger.Module

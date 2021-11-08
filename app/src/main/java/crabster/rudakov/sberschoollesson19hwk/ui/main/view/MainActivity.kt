@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import crabster.rudakov.sberschoollesson19hwk.R
-import crabster.rudakov.sberschoollesson19hwk.data.di.factory.ViewModelFactory
+import crabster.rudakov.sberschoollesson19hwk.ui.main.factory.ViewModelFactory
 import crabster.rudakov.sberschoollesson19hwk.ui.main.viewModel.MainViewModel
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject

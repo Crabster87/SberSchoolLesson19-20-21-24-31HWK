@@ -1,8 +1,8 @@
 package crabster.rudakov.sberschoollesson19hwk.ui.country.viewModel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import crabster.rudakov.sberschoollesson19hwk.data.api.RetrofitApi
 import crabster.rudakov.sberschoollesson19hwk.data.model.CountryInfo
@@ -15,7 +15,7 @@ import javax.inject.Inject
  * Класс View Model 2-ого экрана
  * */
 class CountryViewModel
-@Inject constructor(application: Application) : AndroidViewModel(application) {
+@Inject constructor() : ViewModel() {
 
     var retrofitApi: RetrofitApi = RetrofitApi()
     private val coordinates: MutableLiveData<List<Float>> = MutableLiveData()
@@ -23,9 +23,9 @@ class CountryViewModel
     /**
      * Метод возвращает объект 'LiveData'
      *
-     * @return MutableLiveData<List<Float>>
+     * @return LiveData<List<Float>>
      * */
-    fun coordinates(): MutableLiveData<List<Float>> {
+    fun coordinates(): LiveData<List<Float>> {
         return coordinates
     }
 

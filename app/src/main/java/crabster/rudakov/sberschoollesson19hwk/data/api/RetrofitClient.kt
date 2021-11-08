@@ -25,12 +25,10 @@ object RetrofitClient {
      * Создаётся объект класса 'Retrofit', принимающий заданный 'URL' и
      * создающий фабрику для сериализации/десериализации объектов
      * */
-    private val retrofit by lazy {
-        Retrofit.Builder()
+    private val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
-    }
 
     /**
      * Создаётся объект, реализующий интерфейс 'RetrofitServices'

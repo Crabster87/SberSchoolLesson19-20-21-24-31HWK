@@ -6,10 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import crabster.rudakov.sberschoollesson19hwk.R
-import crabster.rudakov.sberschoollesson19hwk.data.di.factory.ViewModelFactory
+import crabster.rudakov.sberschoollesson19hwk.ui.main.factory.ViewModelFactory
 import crabster.rudakov.sberschoollesson19hwk.ui.list.adapter.IListItemListener
 import crabster.rudakov.sberschoollesson19hwk.ui.list.adapter.ListViewAdapter
 import crabster.rudakov.sberschoollesson19hwk.ui.list.viewModel.ListViewModel
@@ -69,9 +68,8 @@ class ListFragment : DaggerFragment(), IListItemListener {
 
     /**
      * Метод получает список стран у ViewModel и передаёт его RecyclerView,
-     * меняет статус прогресса выполнения загрузки, устанавливает разделители
-     * с помощью 'DividerItemDecoration', передаёт список стран и состояние
-     * прогресса во 'MainViewModel', обрабатывая исключения
+     * меняет статус прогресса выполнения загрузки, передаёт список стран
+     * и состояние прогресса во 'MainViewModel', обрабатывая исключения
      * */
     @SuppressLint("CheckResult")
     fun getCountryList() {
@@ -83,12 +81,6 @@ class ListFragment : DaggerFragment(), IListItemListener {
                 if (it.isSuccessful) {
                     recycler_view.layoutManager = LinearLayoutManager(this.context)
                     recycler_view.adapter = ListViewAdapter(it.body()!!, this)
-                    recycler_view.addItemDecoration(
-                        DividerItemDecoration(
-                            requireContext(),
-                            DividerItemDecoration.VERTICAL
-                        )
-                    )
                     mainViewModel.setCountryList(it.body()!!)
                     mainViewModel.setProgress(true)
                 } else {

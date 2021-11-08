@@ -1,7 +1,6 @@
 package crabster.rudakov.sberschoollesson19hwk.ui.list.viewModel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import crabster.rudakov.sberschoollesson19hwk.data.api.RetrofitApi
 import crabster.rudakov.sberschoollesson19hwk.data.model.CountryItem
@@ -14,7 +13,7 @@ import javax.inject.Inject
  * Класс View Model 1-ого экрана
  * */
 class ListViewModel
-@Inject constructor(application: Application) : AndroidViewModel(application) {
+@Inject constructor() : ViewModel() {
 
     var retrofitApi: RetrofitApi = RetrofitApi()
 
