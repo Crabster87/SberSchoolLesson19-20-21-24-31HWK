@@ -1,11 +1,11 @@
 package crabster.rudakov.sberschoollesson19hwk.ui.list.view
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import crabster.rudakov.sberschoollesson19hwk.R
 import crabster.rudakov.sberschoollesson19hwk.ui.main.factory.ViewModelFactory
@@ -15,9 +15,8 @@ import crabster.rudakov.sberschoollesson19hwk.ui.list.viewModel.ListViewModel
 import crabster.rudakov.sberschoollesson19hwk.ui.main.view.MainActivity
 import crabster.rudakov.sberschoollesson19hwk.ui.main.viewModel.MainViewModel
 import dagger.android.support.DaggerFragment
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_list.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ListFragment : DaggerFragment(), IListItemListener {
@@ -48,9 +47,27 @@ class ListFragment : DaggerFragment(), IListItemListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
-        getCountryList()
+        lifecycleScope.launch {
+            listViewModel.getCountryList()
+        }
         progressHandler()
+        setObservers()
         return view
+    }
+
+    private fun setObservers() {
+        listViewModel.countryList().observe(viewLifecycleOwner, {
+            recycler_view.layoutManager = LinearLayoutManager(this.context)
+            recycler_view.adapter = ListViewAdapter(it, this)
+            mainViewModel.setCountryList(it)
+            mainViewModel.setProgress(true)
+        })
+        listViewModel.exception().observe(
+            viewLifecycleOwner,
+            {
+                mainViewModel.setException(it)
+            }
+        )
     }
 
     /**
@@ -64,31 +81,6 @@ class ListFragment : DaggerFragment(), IListItemListener {
                 false -> progress_text_view.visibility = View.VISIBLE
             }
         })
-    }
-
-    /**
-     * Метод получает список стран у ViewModel и передаёт его RecyclerView,
-     * меняет статус прогресса выполнения загрузки, передаёт список стран
-     * и состояние прогресса во 'MainViewModel', обрабатывая исключения
-     * */
-    @SuppressLint("CheckResult")
-    fun getCountryList() {
-        mainViewModel.setProgress(false)
-        listViewModel.getCountryList()
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                if (it.isSuccessful) {
-                    recycler_view.layoutManager = LinearLayoutManager(this.context)
-                    recycler_view.adapter = ListViewAdapter(it.body()!!, this)
-                    mainViewModel.setCountryList(it.body()!!)
-                    mainViewModel.setProgress(true)
-                } else {
-                    mainViewModel.setException(it.errorBody().toString())
-                }
-            }, {
-                it.message?.let { ex -> mainViewModel.setException(ex) }
-            })
     }
 
     /**

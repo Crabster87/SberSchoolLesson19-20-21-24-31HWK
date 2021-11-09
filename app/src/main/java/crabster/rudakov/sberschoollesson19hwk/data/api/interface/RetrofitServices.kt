@@ -3,7 +3,7 @@ package crabster.rudakov.sberschoollesson19hwk.data.api.`interface`
 import crabster.rudakov.sberschoollesson19hwk.data.model.CountryInfo
 import crabster.rudakov.sberschoollesson19hwk.data.model.CountryItem
 import crabster.rudakov.sberschoollesson19hwk.utils.Constants.LIST_URL
-import retrofit2.Response
+import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
 import javax.inject.Singleton
@@ -20,7 +20,7 @@ interface RetrofitServices {
      * @return список стран мира
      * */
     @GET(LIST_URL)
-    suspend fun getCountryList(): Response<List<CountryItem>>
+    fun getCountryList(): Single<List<CountryItem>>
 
     /**
      * Метод получает страну из списка по её названию, используя
@@ -30,6 +30,6 @@ interface RetrofitServices {
      * @return название страны
      * */
     @GET("{country}")
-    suspend fun getCountry(@Path("country") country: String): Response<CountryInfo>
+    fun getCountry(@Path("country") country: String): Single<CountryInfo>
 
 }

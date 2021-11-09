@@ -9,7 +9,7 @@
         android:id="@+id/listFragment"
         android:name="crabster.rudakov.sberschoollesson19hwk.ui.list.view.ListFragment"
         android:label="fragment_list"
-        tools:layout="@layout/fragment_list" >
+        tools:layout="@layout/fragment_list">
         <action
             android:id="@+id/action_listFragment_to_countryFragment"
             app:destination="@id/countryFragment"
@@ -20,7 +20,7 @@
         android:id="@+id/countryFragment"
         android:name="crabster.rudakov.sberschoollesson19hwk.ui.country.view.CountryFragment"
         android:label="fragment_country"
-        tools:layout="@layout/fragment_country" >
+        tools:layout="@layout/fragment_country">
         <action
             android:id="@+id/action_countryFragment_to_listFragment"
             app:destination="@id/listFragment"

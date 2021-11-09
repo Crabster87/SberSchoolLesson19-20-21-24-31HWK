@@ -1,12 +1,12 @@
 package crabster.rudakov.sberschoollesson19hwk.ui.list.viewModel
 
+import android.annotation.SuppressLint
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import crabster.rudakov.sberschoollesson19hwk.data.api.RetrofitApi
 import crabster.rudakov.sberschoollesson19hwk.data.model.CountryItem
-import io.reactivex.Single
-import kotlinx.coroutines.launch
-import retrofit2.Response
+import crabster.rudakov.sberschoollesson19hwk.data.repository.RetrofitRepository
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -15,7 +15,16 @@ import javax.inject.Inject
 class ListViewModel
 @Inject constructor() : ViewModel() {
 
-    var retrofitApi: RetrofitApi = RetrofitApi()
+    private var retrofitRepository = RetrofitRepository()
+    private var countryList: MutableLiveData<List<CountryItem>> = MutableLiveData()
+    private var exception: MutableLiveData<String> = MutableLiveData()
+
+    fun countryList(): MutableLiveData<List<CountryItem>>{
+        return countryList
+    }
+    fun exception(): MutableLiveData<String> {
+        return exception
+    }
 
     /**
      * Метод единожды возвращает список 'List<CountryItem>' для
@@ -25,19 +34,16 @@ class ListViewModel
      *
      * @return Single<Response<List<CountryItem>>>
      * */
-    fun getCountryList(): Single<Response<List<CountryItem>>>{
-        return Single.create{ subscriber ->
-            viewModelScope.launch {
-                try {
-                    subscriber.onSuccess(retrofitApi.getCountryList())
-                } catch (e: Exception) {
-                    subscriber.onError(
-                        Throwable(e.message.toString())
-                    )
-                }
-
-            }
-        }
+    @SuppressLint("CheckResult")
+    fun getCountryList() {
+        retrofitRepository.getCountryList()
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                countryList.value = it
+            }, {
+                exception.value = it.toString()
+            })
     }
 
 }

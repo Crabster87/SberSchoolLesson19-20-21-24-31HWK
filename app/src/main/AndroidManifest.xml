@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="crabster.rudakov.sberschoollesson19hwk">
+
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".App"
@@ -13,17 +14,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SberSchoolLesson19HWK">
-
-        <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="@string/map_key" />
-
         <activity
-            android:name="crabster.rudakov.sberschoollesson19hwk.ui.main.view.MainActivity">
+            android:name=".SplashActivity"
+            android:label="@string/title_activity_splash"
+            android:theme="@style/Theme.SberSchoolLesson19HWK.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/map_key" />
+
+        <activity android:name=".ui.main.view.MainActivity">
+
         </activity>
     </application>
 

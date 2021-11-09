@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -17,9 +18,8 @@ import crabster.rudakov.sberschoollesson19hwk.ui.main.factory.ViewModelFactory
 import crabster.rudakov.sberschoollesson19hwk.ui.country.viewModel.CountryViewModel
 import crabster.rudakov.sberschoollesson19hwk.ui.main.viewModel.MainViewModel
 import dagger.android.support.DaggerFragment
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_country.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -58,56 +58,41 @@ class CountryFragment : DaggerFragment(), OnMapReadyCallback {
          * Получение данных у ViewModel по названию страны
          * @sample 'https://travelbriefing.org/Netherlands' -> Netherlands
          * */
-        mainViewModel.selectedCountry().observe(viewLifecycleOwner, {
-            getCountry(it.url.split("/")[3])
-        })
+        setObservers()
 
         return view
     }
 
-    /**
-     * Метод получает данные у ViewModel и производит наполнение всех View
-     * текущего фрагмента, обрабатывая исключения
-     *
-     * @param country название страны
-     * */
-    @SuppressLint("CheckResult")
-    private fun getCountry(country: String) {
-        countryViewModel.getCountry(country)
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                if (it.isSuccessful) {
-                    country_name.text = it.body()?.names?.name
-                    country_full_name.text = it.body()?.names?.full
-                    country_lat.text = it.body()?.maps?.lat.toString()
-                    country_long.text = it.body()?.maps?.long.toString()
+    private fun setObservers() {
+        mainViewModel.selectedCountry().observe(viewLifecycleOwner, {
+            lifecycleScope.launch {
+                countryViewModel.getCountry(it.url.split("/")[3])
+            }
+        })
 
-                    val coordinates: List<Float> = listOf(
-                        it.body()?.maps?.lat,
-                        it.body()?.maps?.long
-                    ) as List<Float>
+        countryViewModel.countryInfo().observe(viewLifecycleOwner, {
+            country_name.text = it.names.name
+            country_full_name.text = it.names.full
+            country_lat.text = it.maps.lat.toString()
+            country_long.text = it.maps.long.toString()
+            country_currency.text = it.currency.name
 
-                    countryViewModel.setCoordinates(coordinates)
+            if (it.languageList?.isNotEmpty() == true)
+                country_language.text = it.languageList.get(0).language
+            else country_language.text = "------"
 
-                    country_currency.text = it.body()?.currency?.name
+            if (it.neighborsList?.isNotEmpty() == true)
+                country_neighbors.text =
+                    it.neighborsList.joinToString { it1 -> it1.name }
+            else country_neighbors.text = "------"
+        })
 
-                    if (it.body()?.languageList?.size != 0)
-                        country_language.text = it.body()?.languageList?.get(0)?.language
-                    else country_language.text = "------"
-
-
-                    if (it.body()?.neighborsList?.size != 0)
-                        country_neighbors.text =
-                            it.body()?.neighborsList?.joinToString { it1 -> it1.name }
-                    else country_neighbors.text = "------"
-
-                } else {
-                    mainViewModel.setException(it.errorBody().toString())
-                }
-            }, {
-                it.message?.let { ex -> mainViewModel.setException(ex) }
-            })
+        countryViewModel.exception().observe(
+            viewLifecycleOwner,
+            {
+                mainViewModel.setException(it)
+            }
+        )
     }
 
     /**

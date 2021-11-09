@@ -1,14 +1,13 @@
 package crabster.rudakov.sberschoollesson19hwk.ui.country.viewModel
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import crabster.rudakov.sberschoollesson19hwk.data.api.RetrofitApi
 import crabster.rudakov.sberschoollesson19hwk.data.model.CountryInfo
-import io.reactivex.Single
-import kotlinx.coroutines.launch
-import retrofit2.Response
+import crabster.rudakov.sberschoollesson19hwk.data.repository.RetrofitRepository
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -17,8 +16,18 @@ import javax.inject.Inject
 class CountryViewModel
 @Inject constructor() : ViewModel() {
 
-    var retrofitApi: RetrofitApi = RetrofitApi()
+    private var retrofitRepository = RetrofitRepository()
+    private var countryInfo: MutableLiveData<CountryInfo> = MutableLiveData()
+    private var exception: MutableLiveData<String> = MutableLiveData()
     private val coordinates: MutableLiveData<List<Float>> = MutableLiveData()
+
+    fun countryInfo(): MutableLiveData<CountryInfo> {
+        return countryInfo
+    }
+    fun exception(): MutableLiveData<String> {
+        return exception
+    }
+
 
     /**
      * Метод возвращает объект 'LiveData'
@@ -27,16 +36,6 @@ class CountryViewModel
      * */
     fun coordinates(): LiveData<List<Float>> {
         return coordinates
-    }
-
-    /**
-     * Метод устанавливает переданный список со значениями широты
-     * и долготы в объект 'LiveData'
-     *
-     * @param coordinates список из 2-х элементов(широта и долгота)
-     * */
-    fun setCoordinates(coordinates: List<Float>) {
-        this.coordinates.value = coordinates
     }
 
     /**
@@ -49,16 +48,30 @@ class CountryViewModel
      * @param country название страны
      * @return Single<Response<CountryInfo>>
      * */
-    fun getCountry(country: String): Single<Response<CountryInfo>> {
-        return Single.create { subscriber ->
-            viewModelScope.launch {
-                try {
-                    subscriber.onSuccess(retrofitApi.getCountry(country))
-                } catch (e: Exception) {
-                    subscriber.onError(Throwable(e.message.toString()))
-                }
-            }
-        }
+    @SuppressLint("CheckResult")
+    fun getCountry(country: String) {
+        retrofitRepository.getCountry(country)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                countryInfo.value = it
+                setCoordinates(listOf(
+                    it?.maps?.lat,
+                    it?.maps?.long
+                ) as List<Float>)
+            }, {
+                exception.value = it.toString()
+            })
+    }
+
+    /**
+     * Метод устанавливает переданный список со значениями широты
+     * и долготы в объект 'LiveData'
+     *
+     * @param coordinates список из 2-х элементов(широта и долгота)
+     * */
+    private fun setCoordinates(coordinates: List<Float>) {
+        this.coordinates.value = coordinates
     }
 
 }
