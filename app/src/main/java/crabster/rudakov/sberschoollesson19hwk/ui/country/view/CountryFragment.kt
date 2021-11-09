@@ -54,15 +54,16 @@ class CountryFragment : DaggerFragment(), OnMapReadyCallback {
             childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        /**
-         * Получение данных у ViewModel по названию страны
-         * @sample 'https://travelbriefing.org/Netherlands' -> Netherlands
-         * */
         setObservers()
-
         return view
     }
 
+    /**
+     * Метод получает данные у ViewModel по названию страны и производит
+     * наполнение всех View текущего фрагмента, обрабатывая исключения
+     *
+     * @sample 'https://travelbriefing.org/Netherlands' -> Netherlands
+     * */
     private fun setObservers() {
         mainViewModel.selectedCountry().observe(viewLifecycleOwner, {
             lifecycleScope.launch {
@@ -78,7 +79,7 @@ class CountryFragment : DaggerFragment(), OnMapReadyCallback {
             country_currency.text = it.currency.name
 
             if (it.languageList?.isNotEmpty() == true)
-                country_language.text = it.languageList.get(0).language
+                country_language.text = it.languageList[0].language
             else country_language.text = "------"
 
             if (it.neighborsList?.isNotEmpty() == true)

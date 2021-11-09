@@ -1,8 +1,7 @@
 package crabster.rudakov.sberschoollesson19hwk.ui.main.viewModel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import crabster.rudakov.sberschoollesson19hwk.data.model.CountryItem
 import javax.inject.Inject
 
@@ -10,7 +9,7 @@ import javax.inject.Inject
  * Класс View Model экрана главной Activity
  * */
 class MainViewModel
-@Inject constructor(application: Application) : AndroidViewModel(application) {
+@Inject constructor() : ViewModel() {
 
     private var progress: MutableLiveData<Boolean> = MutableLiveData()
     private var countryList: MutableLiveData<List<CountryItem>> = MutableLiveData()

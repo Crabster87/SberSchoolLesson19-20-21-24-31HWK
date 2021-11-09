@@ -55,6 +55,12 @@ class ListFragment : DaggerFragment(), IListItemListener {
         return view
     }
 
+    /**
+     * Метод получает список стран у ViewModel и передаёт его RecyclerView,
+     * меняет статус прогресса выполнения загрузки, устанавливает разделители,
+     * передаёт список стран и состояние прогресса во 'MainViewModel',
+     * обрабатывая исключения
+     * */
     private fun setObservers() {
         listViewModel.countryList().observe(viewLifecycleOwner, {
             recycler_view.layoutManager = LinearLayoutManager(this.context)

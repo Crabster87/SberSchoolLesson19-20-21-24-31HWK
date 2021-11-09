@@ -28,8 +28,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/map_key" />
 
-        <activity android:name=".ui.main.view.MainActivity">
-
+        <activity android:name=".ui.main.view.MainActivity"
+            android:exported="true">
         </activity>
     </application>
 

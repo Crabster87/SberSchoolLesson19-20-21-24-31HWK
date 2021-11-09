@@ -19,20 +19,26 @@ class ListViewModel
     private var countryList: MutableLiveData<List<CountryItem>> = MutableLiveData()
     private var exception: MutableLiveData<String> = MutableLiveData()
 
-    fun countryList(): MutableLiveData<List<CountryItem>>{
+    /**
+     * Метод возвращает список стран
+     *
+     * @return MutableLiveData<List<CountryItem>>
+     * */
+    fun countryList(): MutableLiveData<List<CountryItem>> {
         return countryList
     }
+
+    /**
+     * Метод возвращает строковое представление исключения
+     *
+     * @return MutableLiveData<String>
+     * */
     fun exception(): MutableLiveData<String> {
         return exception
     }
 
     /**
-     * Метод единожды возвращает список 'List<CountryItem>' для
-     * асинхронной обработки кода используя при этом Kotlin
-     * Coroutines и обрабатывая исключения. Объект 'viewModelScope'
-     * отменяет привязку 'CoroutineScope' после уничтожения ViewModel
-     *
-     * @return Single<Response<List<CountryItem>>>
+     * Метод единожды получает список 'List<CountryItem>', обрабатывая исключения
      * */
     @SuppressLint("CheckResult")
     fun getCountryList() {
