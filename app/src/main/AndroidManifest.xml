@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SberSchoolLesson19HWK">
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.splashScreen.SplashActivity"
             android:label="@string/title_activity_splash"
             android:theme="@style/Theme.SberSchoolLesson19HWK.NoActionBar">
             <intent-filter>

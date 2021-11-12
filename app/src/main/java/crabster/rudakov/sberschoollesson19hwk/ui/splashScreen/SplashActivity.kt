@@ -1,4 +1,4 @@
-package crabster.rudakov.sberschoollesson19hwk
+package crabster.rudakov.sberschoollesson19hwk.ui.splashScreen
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.os.Handler
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import crabster.rudakov.sberschoollesson19hwk.R
 import crabster.rudakov.sberschoollesson19hwk.ui.main.view.MainActivity
 
 class SplashActivity : AppCompatActivity() {
