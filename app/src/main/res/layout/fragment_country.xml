@@ -6,6 +6,12 @@
     android:orientation="vertical"
     tools:context=".ui.country.view.CountryFragment">
 
+    <ImageView
+        android:id="@+id/flag_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="35pt"
+        android:src="@drawable/ic_country" />
+
     <TextView
         android:id="@+id/country_name"
         android:layout_width="wrap_content"
@@ -113,7 +119,7 @@
         android:id="@+id/mapFragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="380dp"
-        android:layout_height="500dp"
+        android:layout_height="450dp"
         android:layout_gravity="center"
         android:layout_margin="30dp" />
 </LinearLayout>

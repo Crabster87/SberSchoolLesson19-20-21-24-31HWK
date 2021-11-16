@@ -20,14 +20,19 @@ class CountryViewModel
     private var countryInfo: MutableLiveData<CountryInfo> = MutableLiveData()
     private var exception: MutableLiveData<String> = MutableLiveData()
     private val coordinates: MutableLiveData<List<Float>> = MutableLiveData()
+    private val flag: MutableLiveData<String> = MutableLiveData()
 
     fun countryInfo(): MutableLiveData<CountryInfo> {
         return countryInfo
     }
+
     fun exception(): MutableLiveData<String> {
         return exception
     }
 
+    fun flag(): MutableLiveData<String> {
+        return flag
+    }
 
     /**
      * Метод возвращает объект 'LiveData'
@@ -40,25 +45,44 @@ class CountryViewModel
 
     /**
      * Метод единожды возвращает объект 'CountryInfo', полученный по
-     * переданному названию страны, для асинхронной обработки кода
-     * используя при этом Kotlin Coroutines и обрабатывая исключения.
-     * Объект 'viewModelScope' отменяет привязку 'CoroutineScope'
-     * после уничтожения ViewModel
+     * переданному названию страны, обрабатывая исключения.
      *
      * @param country название страны
-     * @return Single<Response<CountryInfo>>
+     * @return Single<CountryInfo>
      * */
     @SuppressLint("CheckResult")
     fun getCountry(country: String) {
+        countryInfo.value = null
         retrofitRepository.getCountry(country)
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 countryInfo.value = it
-                setCoordinates(listOf(
-                    it?.maps?.lat,
-                    it?.maps?.long
-                ) as List<Float>)
+                setCoordinates(
+                    listOf(
+                        it?.maps?.lat,
+                        it?.maps?.long
+                    ) as List<Float>
+                )
+            }, {
+                exception.value = it.toString()
+            })
+    }
+
+    /**
+     * Метод единожды возвращает объект 'Single<String>', полученный по
+     * переданной аббревиатуре флага, обрабатывая исключения.
+     *
+     * @param flag аббревиатура флага
+     * @return Single<String>
+     * */
+    @SuppressLint("CheckResult")
+    fun getFlag(flag: String) {
+        retrofitRepository.getFlag(flag)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                this.flag.value = it
             }, {
                 exception.value = it.toString()
             })

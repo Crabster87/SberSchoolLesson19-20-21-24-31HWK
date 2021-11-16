@@ -6,6 +6,7 @@
     <string name="currency">Валюта:</string>
     <string name="language">Официальный язык:</string>
     <string name="neighbors">Страны соседи:</string>
+    <string name="search">Поиск</string>
 
     <string name="map_key">AIzaSyCNjT2O7JRS4dsXWE2924Q7xmWxAJTnuug</string>
     <string name="title_activity_splash">SplashActivity</string>

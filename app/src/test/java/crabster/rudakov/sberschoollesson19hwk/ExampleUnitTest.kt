@@ -1,33 +1,27 @@
 package crabster.rudakov.sberschoollesson19hwk
 
-import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import crabster.rudakov.sberschoollesson19hwk.data.model.CountryItem
 import crabster.rudakov.sberschoollesson19hwk.ui.list.viewModel.ListViewModel
 import crabster.rudakov.sberschoollesson19hwk.ui.main.viewModel.MainViewModel
-import io.reactivex.Scheduler
 import io.reactivex.android.plugins.RxAndroidPlugins
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.junit.Test
 
 import org.junit.Before
 import org.junit.Rule
-import org.mockito.Mockito
-import java.util.concurrent.Callable
 
 class ExampleUnitTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val app: Application = Mockito.mock(Application::class.java)
     private val listViewModel = ListViewModel()
-    private val mainViewModel = MainViewModel(app)
+    private val mainViewModel = MainViewModel()
 
     @Before
     fun setUp() {
-        RxAndroidPlugins.setInitMainThreadSchedulerHandler { scheduler: Callable<Scheduler?>? -> Schedulers.trampoline() }
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
     }
 
     /**
@@ -37,14 +31,6 @@ class ExampleUnitTest {
     @Test
     fun testConnection() {
         listViewModel.getCountryList()
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                assert(it.isSuccessful)
-            }, {
-                it.message?.let { ex -> println(ex) }
-                assert(false)
-            })
     }
 
     /**
@@ -79,10 +65,10 @@ class ExampleUnitTest {
     fun testSelectedCountry() {
         val list = listOf(CountryItem("test1", "test1"), CountryItem("test2", "test2"))
         mainViewModel.setCountryList(list)
-        mainViewModel.setSelectedCountry(0)
-        val country = mainViewModel.selectedCountry().value
+        mainViewModel.setSelectedCountry(list[0].url)
+        val country = mainViewModel.selectedCountry()
         println("$country")
-        assert(country?.name == "test1")
+        assert(country.value == "test1")
     }
 
 }

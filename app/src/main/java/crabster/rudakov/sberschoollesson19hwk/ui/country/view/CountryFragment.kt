@@ -6,21 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.pixplicity.sharp.Sharp
 import crabster.rudakov.sberschoollesson19hwk.R
-import crabster.rudakov.sberschoollesson19hwk.ui.main.factory.ViewModelFactory
 import crabster.rudakov.sberschoollesson19hwk.ui.country.viewModel.CountryViewModel
+import crabster.rudakov.sberschoollesson19hwk.ui.main.factory.ViewModelFactory
 import crabster.rudakov.sberschoollesson19hwk.ui.main.viewModel.MainViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_country.*
-import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
+
 
 /**
  * Класс, хранящий логику отобржаения данных на 2-ом экране,
@@ -65,35 +66,43 @@ class CountryFragment : DaggerFragment(), OnMapReadyCallback {
      * @sample 'https://travelbriefing.org/Netherlands' -> Netherlands
      * */
     private fun setObservers() {
-        mainViewModel.selectedCountry().observe(viewLifecycleOwner, {
-            lifecycleScope.launch {
-                countryViewModel.getCountry(it.url.split("/")[3])
+        mainViewModel.selectedCountry().observe(viewLifecycleOwner) {
+            countryViewModel.getCountry(it.split("/")[3])
+        }
+
+        countryViewModel.countryInfo().observe(viewLifecycleOwner) {
+            if (it != null) {
+                if (it.names.iso2 != null) {
+                    countryViewModel.getFlag(it.names.iso2.lowercase(Locale.getDefault()))
+                }
+
+                country_name.text = it.names.name
+                country_full_name.text = it.names.full
+
+                country_lat.text = it.maps.lat.toString()
+                country_long.text = it.maps.long.toString()
+                country_currency.text = it.currency.name
+
+                if (it.languageList?.isNotEmpty() == true)
+                    country_language.text = it.languageList[0].language
+                else country_language.text = "------"
+
+                if (it.neighborsList?.isNotEmpty() == true)
+                    country_neighbors.text =
+                        it.neighborsList.joinToString { it1 -> it1.name }
+                else country_neighbors.text = "------"
             }
-        })
+        }
 
-        countryViewModel.countryInfo().observe(viewLifecycleOwner, {
-            country_name.text = it.names.name
-            country_full_name.text = it.names.full
-            country_lat.text = it.maps.lat.toString()
-            country_long.text = it.maps.long.toString()
-            country_currency.text = it.currency.name
-
-            if (it.languageList?.isNotEmpty() == true)
-                country_language.text = it.languageList[0].language
-            else country_language.text = "------"
-
-            if (it.neighborsList?.isNotEmpty() == true)
-                country_neighbors.text =
-                    it.neighborsList.joinToString { it1 -> it1.name }
-            else country_neighbors.text = "------"
-        })
+        countryViewModel.flag().observe(viewLifecycleOwner) {
+            Sharp.loadString(it).into(flag_image_view)
+        }
 
         countryViewModel.exception().observe(
-            viewLifecycleOwner,
-            {
-                mainViewModel.setException(it)
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            mainViewModel.setException(it)
+        }
     }
 
     /**
@@ -108,7 +117,7 @@ class CountryFragment : DaggerFragment(), OnMapReadyCallback {
      * */
     @SuppressLint("CheckResult")
     override fun onMapReady(googleMap: GoogleMap?) {
-        countryViewModel.coordinates().observe(viewLifecycleOwner, {
+        countryViewModel.coordinates().observe(viewLifecycleOwner) {
             googleMap?.apply {
                 val cord = LatLng(it[0].toDouble(), it[1].toDouble())
                 clear()
@@ -119,7 +128,7 @@ class CountryFragment : DaggerFragment(), OnMapReadyCallback {
                 )
                 moveCamera(CameraUpdateFactory.newLatLng(cord))
             }
-        })
+        }
     }
 
 }

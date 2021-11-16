@@ -9,8 +9,8 @@ interface IListItemListener {
     /**
      * Метод описывает действия после клика по значению списка
      *
-     * @param position номер позиции в списке
+     * @param url URL страны
      * */
-    fun onMessageClick(position: Int)
+    fun onMessageClick(url: String)
 
 }

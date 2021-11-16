@@ -13,7 +13,7 @@ class RetrofitRepository {
 
     /**
      * Метод получает страну из списка по её названию, используя
-     * аттрибут "country", предоставляемого JSON-файла
+     * аттрибут "country" предоставляемого JSON-файла
      *
      * @param country название страны
      * @return название страны
@@ -29,6 +29,17 @@ class RetrofitRepository {
      * */
     fun getCountryList(): Single<List<CountryItem>> {
         return RetrofitClient.api.getCountryList()
+    }
+
+    /**
+     * Метод получает флаг страны из списка по его аббревиатуре, используя
+     * аттрибут "flag" предоставляемого JSON-файла
+     *
+     * @param flag флаг страны
+     * @return флаг страны
+     * */
+    fun getFlag(flag: String): Single<String> {
+        return RetrofitClient.api.getFlag(flag)
     }
 
 }

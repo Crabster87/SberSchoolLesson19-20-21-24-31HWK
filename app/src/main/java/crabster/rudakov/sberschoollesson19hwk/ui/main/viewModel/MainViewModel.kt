@@ -13,7 +13,7 @@ class MainViewModel
 
     private var progress: MutableLiveData<Boolean> = MutableLiveData()
     private var countryList: MutableLiveData<List<CountryItem>> = MutableLiveData()
-    private var selectedCountry: MutableLiveData<CountryItem> = MutableLiveData()
+    private var selectedCountry: MutableLiveData<String> = MutableLiveData()
     private var exception: MutableLiveData<String> = MutableLiveData()
 
     /**
@@ -55,9 +55,9 @@ class MainViewModel
     /**
      * Метод возвращает выбранную страну
      *
-     * @return MutableLiveData<CountryItem>
+     * @return MutableLiveData<String>
      * */
-    fun selectedCountry(): MutableLiveData<CountryItem> {
+    fun selectedCountry(): MutableLiveData<String> {
         return selectedCountry
     }
 
@@ -66,8 +66,8 @@ class MainViewModel
      *
      * @param selectedCountry название страны
      * */
-    fun setSelectedCountry(selectedCountry: Int) {
-        this.selectedCountry.value = countryList.value?.get(selectedCountry)
+    fun setSelectedCountry(selectedCountry: String) {
+        this.selectedCountry.value = selectedCountry
     }
 
     /**

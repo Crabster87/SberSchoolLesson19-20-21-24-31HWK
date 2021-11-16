@@ -6,20 +6,29 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "crabster.rudakov.sberschoollesson19hwk"
-        minSdkVersion 16
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        minSdk 21
+        targetSdk 31
+        versionCode 59
+        versionName "1.5"
         multiDexEnabled true
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        targetSdkVersion 31
     }
 
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        releaseStaging {
+            debuggable true
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -29,9 +38,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
     }
 }
 
@@ -44,16 +50,18 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.test.ext:junit-ktx:1.1.3'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    //Espresso
     testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test:rules:1.4.1-alpha03'
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.5.0-alpha03')
     testImplementation "org.mockito:mockito-core:3.5.15"
     testImplementation("org.mockito:mockito-inline:2.8.47")
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.4'
     testImplementation "com.google.truth:truth:1.1.2"
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.android.support:multidex:1.0.3'
 
     //ViewModel
@@ -69,8 +77,11 @@ dependencies {
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
     //Google Map
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    androidTestImplementation 'androidx.test:rules:1.4.1-alpha03'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.5.0-alpha03'
     //Dagger2
     def daggerVer = 2.20
     implementation "com.google.dagger:dagger:$daggerVer"
@@ -78,4 +89,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     kapt "com.google.dagger:dagger-android-processor:$daggerVer"
     kapt "com.google.dagger:dagger-compiler:$daggerVer"
+    //SVG
+    implementation 'com.pixplicity.sharp:library:1.1.0'
 }

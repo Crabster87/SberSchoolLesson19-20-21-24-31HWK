@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import crabster.rudakov.sberschoollesson19hwk.R
 import crabster.rudakov.sberschoollesson19hwk.ui.main.factory.ViewModelFactory
@@ -16,7 +17,6 @@ import crabster.rudakov.sberschoollesson19hwk.ui.main.view.MainActivity
 import crabster.rudakov.sberschoollesson19hwk.ui.main.viewModel.MainViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_list.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ListFragment : DaggerFragment(), IListItemListener {
@@ -33,6 +33,7 @@ class ListFragment : DaggerFragment(), IListItemListener {
     private val listViewModel: ListViewModel by lazy {
         ViewModelProvider(requireActivity(), viewModelFactory).get(ListViewModel::class.java)
     }
+    private lateinit var listAdapter: ListViewAdapter
 
     /**
      * Метод создаёт View данного фрагмента а также соотвествующую ViewModel
@@ -47,33 +48,45 @@ class ListFragment : DaggerFragment(), IListItemListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
-        lifecycleScope.launch {
-            listViewModel.getCountryList()
-        }
+        listViewModel.getCountryList()
+
         progressHandler()
         setObservers()
+        view.findViewById<EditText>(R.id.filter_edit_text).clearFocus()
         return view
     }
 
     /**
      * Метод получает список стран у ViewModel и передаёт его RecyclerView,
-     * меняет статус прогресса выполнения загрузки, устанавливает разделители,
-     * передаёт список стран и состояние прогресса во 'MainViewModel',
-     * обрабатывая исключения
+     * меняет статус прогресса выполнения загрузки, устанавливает слушатель
+     * изменений в поле EditText, передаёт список стран и состояние прогресса
+     * в MainViewModel, обрабатывая исключения
      * */
     private fun setObservers() {
-        listViewModel.countryList().observe(viewLifecycleOwner, {
+        listViewModel.countryList().observe(viewLifecycleOwner) {
+            listAdapter = ListViewAdapter(it, this)
             recycler_view.layoutManager = LinearLayoutManager(this.context)
-            recycler_view.adapter = ListViewAdapter(it, this)
+            recycler_view.adapter = listAdapter
             mainViewModel.setCountryList(it)
             mainViewModel.setProgress(true)
-        })
+            setFilterListener()
+        }
         listViewModel.exception().observe(
-            viewLifecycleOwner,
-            {
-                mainViewModel.setException(it)
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            mainViewModel.setException(it)
+        }
+    }
+
+    /**
+     * Метод осуществляет наблюдение за изменением текста в поле EditText.
+     * В случае его изменения инициирует фильтрацию и отбор значений списка,
+     * имеющих в названии введённую буквенную последовательность
+     * */
+    private fun setFilterListener() {
+        filter_edit_text.addTextChangedListener {
+            listAdapter.filter.filter(it)
+        }
     }
 
     /**
@@ -81,12 +94,12 @@ class ListFragment : DaggerFragment(), IListItemListener {
      * ViewModel и в зависимости от значения устанавливает видимость View
      * */
     private fun progressHandler() {
-        mainViewModel.progress().observe(viewLifecycleOwner, {
+        mainViewModel.progress().observe(viewLifecycleOwner) {
             when (it) {
-                true -> progress_text_view.visibility = View.INVISIBLE
-                false -> progress_text_view.visibility = View.VISIBLE
+                true -> progress_layout.visibility = View.INVISIBLE
+                false -> progress_layout.visibility = View.VISIBLE
             }
-        })
+        }
     }
 
     /**
@@ -94,10 +107,10 @@ class ListFragment : DaggerFragment(), IListItemListener {
      * 1) получение страны по номеру позиции списка;
      * 2) переход с 1-ого экрана на 2-ой экран
      *
-     * @param position номер позиции в списке стран RecyclerView
+     * @param url URL страны позиции списка RecyclerView
      * */
-    override fun onMessageClick(position: Int) {
-        mainViewModel.setSelectedCountry(position)
+    override fun onMessageClick(url: String) {
+        mainViewModel.setSelectedCountry(url)
         mainActivity.navController.navigate(R.id.action_listFragment_to_countryFragment)
     }
 

@@ -6,6 +6,7 @@ import crabster.rudakov.sberschoollesson19hwk.utils.Constants.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 
 /**
  * Singleton объект, имеющий возможность подключения к указанному
@@ -24,13 +25,16 @@ object RetrofitClient {
 
     /**
      * Создаётся объект класса 'Retrofit', принимающий заданный 'URL' и
-     * создающий фабрику для сериализации/десериализации объектов
+     * создающий фабрики для получения примитивов(строки) из запроса,
+     * для сериализации/десериализации объектов, для получения сущностей
+     * RxJava(Observable, Flowable, Single, Completable or Maybe)
      * */
     private val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .build()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(ScalarsConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gson))
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .build()
 
     /**
      * Создаётся объект, реализующий интерфейс 'RetrofitServices'

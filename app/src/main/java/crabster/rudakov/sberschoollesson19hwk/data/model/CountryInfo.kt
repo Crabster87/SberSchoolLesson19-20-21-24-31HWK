@@ -12,7 +12,7 @@ import com.google.gson.annotations.SerializedName
  * @param languageList ключ пары со значением списка языков страны из JSON-файла
  * @param neighborsList ключ пары со значением списка соседних стран из JSON-файла
  * */
-data class CountryInfo (
+data class CountryInfo(
     val names: Names,
     val maps: Maps,
     val currency: Currency,
@@ -23,15 +23,17 @@ data class CountryInfo (
 )
 
 /**
- * Класс, хранящий название страны
+ * Класс, хранящий название страны и её флаг
  *
  * @param name ключ пары со значением названия из JSON-файла
  * @param full ключ пары со значениями полного названия из JSON-файла
+ * @param iso2 ключ пары со значениями аббревиатуры флага из JSON-файла
  * */
-data class Names (
+data class Names(
     val name: String,
-    val full: String
-    )
+    val full: String,
+    val iso2: String
+)
 
 /**
  * Класс, хранящий координаты страны
@@ -39,7 +41,7 @@ data class Names (
  * @param lat ключ пары со значением широты из JSON-файла
  * @param long ключ пары со значениями долготы из JSON-файла
  * */
-data class Maps (
+data class Maps(
     val lat: Float,
     val long: Float
 )
@@ -49,7 +51,7 @@ data class Maps (
  *
  * @param name ключ пары со значением названия валюты из JSON-файла
  * */
-data class Currency (
+data class Currency(
     val name: String
 )
 
@@ -58,7 +60,7 @@ data class Currency (
  *
  * @param language ключ пары со значением названия языка из JSON-файла
  * */
-data class Language (
+data class Language(
     val language: String
 )
 
@@ -67,6 +69,6 @@ data class Language (
  *
  * @param name ключ пары со значением названия соседней страны из JSON-файла
  * */
-data class Neighbors (
+data class Neighbors(
     val name: String
 )

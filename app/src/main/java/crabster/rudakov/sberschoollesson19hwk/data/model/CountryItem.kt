@@ -6,7 +6,7 @@ package crabster.rudakov.sberschoollesson19hwk.data.model
  * @param name ключ пары со значением названия страны из JSON-файла
  * @param url ключ пары со значениями URL страны
  * */
-data class CountryItem (
+data class CountryItem(
     val name: String,
     val url: String
 )
