@@ -54,10 +54,10 @@ class ListViewAdapter(
     private val filter = object : Filter() {
 
         /**
-         * Метод выполняет фильтрацию списка стран в RecyclerView в
-         * основном потоке в соответствии с заданным правилом(по
-         * наличию в названии страны совпадения с введённым в поле
-         * EditText буквенным символам)
+         * Метод выполняет фильтрацию списка стран RecyclerView в основном
+         * потоке в соответствии с заданным правилом(начальные символы или
+         * полное название страны совпадает с введёнными в поле EditText
+         * буквенным символам)
          *
          * @param charSequence введённая последовательность букв
          * @return объект FilterResults(), содержащий результат
@@ -69,7 +69,7 @@ class ListViewAdapter(
             } else {
                 val filterPattern = charSequence.toString().lowercase(Locale.getDefault())
                 for (item in values) {
-                    if (item.name.lowercase(Locale.getDefault()).contains(filterPattern)) {
+                    if (item.name.lowercase(Locale.getDefault()).startsWith(filterPattern)) {
                         filteredList.add(item)
                     }
                 }
