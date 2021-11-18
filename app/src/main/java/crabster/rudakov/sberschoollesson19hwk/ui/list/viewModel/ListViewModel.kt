@@ -1,6 +1,7 @@
 package crabster.rudakov.sberschoollesson19hwk.ui.list.viewModel
 
 import android.annotation.SuppressLint
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import crabster.rudakov.sberschoollesson19hwk.data.model.CountryItem
@@ -22,28 +23,29 @@ class ListViewModel
     /**
      * Метод возвращает список стран
      *
-     * @return MutableLiveData<List<CountryItem>>
+     * @return LiveData<List<CountryItem>>
      * */
-    fun countryList(): MutableLiveData<List<CountryItem>> {
+    fun countryList(): LiveData<List<CountryItem>> {
         return countryList
     }
 
     /**
      * Метод возвращает строковое представление исключения
      *
-     * @return MutableLiveData<String>
+     * @return LiveData<String>
      * */
-    fun exception(): MutableLiveData<String> {
+    fun exception(): LiveData<String> {
         return exception
     }
 
     /**
-     * Метод единожды получает список 'List<CountryItem>', обрабатывая исключения
+     * Метод единожды возвращает список 'List<CountryItem>',
+     * обрабатывая исключения
      * */
     @SuppressLint("CheckResult")
     fun getCountryList() {
         retrofitRepository.getCountryList()
-            .subscribeOn(Schedulers.newThread())
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 countryList.value = it

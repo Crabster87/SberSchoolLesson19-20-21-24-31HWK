@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
@@ -22,54 +23,23 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Класс, реализующий проверку тест-кейса, при котором в поле EditText вводятся
- * первые буквы названия страны и производится фильтрация списка с выводом
- * корректного результата
+ * Класс, реализующий проверку тест-кейса, при котором происходит корректное
+ * отображение элементов списка RecyclerView
  * */
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class TestOpenFilteredCountry {
+class TestOpenMultiplyCountries {
 
     @Rule
     @JvmField
     var mActivityTestRule = ActivityTestRule(SplashActivity::class.java)
 
     @Test
-    fun openFilteredCountry() {
+    fun testOpenMultiplyCountries() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         Thread.sleep(2500)
-
-        val appCompatEditText = onView(
-            allOf(
-                withId(R.id.filter_edit_text),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.nav_host_fragment),
-                        0
-                    ),
-                    0
-                ),
-                isDisplayed()
-            )
-        )
-        appCompatEditText.perform(click())
-
-        val appCompatEditText2 = onView(
-            allOf(
-                withId(R.id.filter_edit_text),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.nav_host_fragment),
-                        0
-                    ),
-                    0
-                ),
-                isDisplayed()
-            )
-        )
-        appCompatEditText2.perform(replaceText("ru"), closeSoftKeyboard())
 
         val recyclerView = onView(
             allOf(
@@ -84,12 +54,56 @@ class TestOpenFilteredCountry {
 
         val textView = onView(
             allOf(
-                withId(R.id.country_name), withText("Russia"),
+                withId(R.id.country_name), withText("Afghanistan"),
                 withParent(withParent(withId(R.id.nav_host_fragment))),
                 isDisplayed()
             )
         )
-        textView.check(matches(withText("Russia")))
+        textView.check(matches(withText("Afghanistan")))
+
+        pressBack()
+
+        val recyclerView2 = onView(
+            allOf(
+                withId(R.id.recycler_view),
+                childAtPosition(
+                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
+                    1
+                )
+            )
+        )
+        recyclerView2.perform(actionOnItemAtPosition<ViewHolder>(5, click()))
+
+        val textView2 = onView(
+            allOf(
+                withId(R.id.country_name), withText("Andorra"),
+                withParent(withParent(withId(R.id.nav_host_fragment))),
+                isDisplayed()
+            )
+        )
+        textView2.check(matches(withText("Andorra")))
+
+        pressBack()
+
+        val recyclerView3 = onView(
+            allOf(
+                withId(R.id.recycler_view),
+                childAtPosition(
+                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
+                    1
+                )
+            )
+        )
+        recyclerView3.perform(actionOnItemAtPosition<ViewHolder>(10, click()))
+
+        val textView3 = onView(
+            allOf(
+                withId(R.id.country_name), withText("Armenia"),
+                withParent(withParent(withId(R.id.nav_host_fragment))),
+                isDisplayed()
+            )
+        )
+        textView3.check(matches(withText("Armenia")))
     }
 
     private fun childAtPosition(

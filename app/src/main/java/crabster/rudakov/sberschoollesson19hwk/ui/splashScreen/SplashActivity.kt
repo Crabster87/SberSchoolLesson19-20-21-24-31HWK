@@ -2,9 +2,11 @@ package crabster.rudakov.sberschoollesson19hwk.ui.splashScreen
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.view.Window
+import android.os.Looper
+import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import crabster.rudakov.sberschoollesson19hwk.R
@@ -21,9 +23,9 @@ class SplashActivity : AppCompatActivity() {
      * */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        makeFullScreen()
         setContentView(R.layout.activity_splash)
-        Handler().postDelayed({
+        makeFullScreen()
+        Handler(Looper.getMainLooper()).postDelayed({
             startActivity(Intent(this, MainActivity::class.java))
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
             finish()
@@ -36,12 +38,15 @@ class SplashActivity : AppCompatActivity() {
      * @return MutableLiveData<Boolean> boolean значение статуса
      * */
     private fun makeFullScreen() {
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
-        supportActionBar?.hide()
+        @Suppress("DEPRECATION")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+        } else {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        }
     }
 
 }

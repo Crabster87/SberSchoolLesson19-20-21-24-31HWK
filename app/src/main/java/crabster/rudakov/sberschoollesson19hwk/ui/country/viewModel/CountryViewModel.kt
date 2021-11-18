@@ -22,15 +22,30 @@ class CountryViewModel
     private val coordinates: MutableLiveData<List<Float>> = MutableLiveData()
     private val flag: MutableLiveData<String> = MutableLiveData()
 
-    fun countryInfo(): MutableLiveData<CountryInfo> {
+    /**
+     * Метод возвращает объект, хранящий информацию о стране
+     *
+     * @return LiveData<CountryInfo>
+     * */
+    fun countryInfo(): LiveData<CountryInfo> {
         return countryInfo
     }
 
-    fun exception(): MutableLiveData<String> {
+    /**
+     * Метод возвращает строковое представление исключения
+     *
+     * @return LiveData<String>
+     * */
+    fun exception(): LiveData<String> {
         return exception
     }
 
-    fun flag(): MutableLiveData<String> {
+    /**
+     * Метод возвращает флаг
+     *
+     * @return LiveData<String>
+     * */
+    fun flag(): LiveData<String> {
         return flag
     }
 
@@ -54,7 +69,7 @@ class CountryViewModel
     fun getCountry(country: String) {
         countryInfo.value = null
         retrofitRepository.getCountry(country)
-            .subscribeOn(Schedulers.newThread())
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 countryInfo.value = it
@@ -79,7 +94,7 @@ class CountryViewModel
     @SuppressLint("CheckResult")
     fun getFlag(flag: String) {
         retrofitRepository.getFlag(flag)
-            .subscribeOn(Schedulers.newThread())
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 this.flag.value = it
