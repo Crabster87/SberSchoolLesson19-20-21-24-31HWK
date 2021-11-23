@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -14,6 +15,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.pixplicity.sharp.Sharp
 import crabster.rudakov.sberschoollesson19hwk.R
+import crabster.rudakov.sberschoollesson19hwk.ui.country.adapter.ImageViewAdapter
 import crabster.rudakov.sberschoollesson19hwk.ui.country.viewModel.CountryViewModel
 import crabster.rudakov.sberschoollesson19hwk.ui.main.factory.ViewModelFactory
 import crabster.rudakov.sberschoollesson19hwk.ui.main.viewModel.MainViewModel
@@ -75,6 +77,7 @@ class CountryFragment : DaggerFragment(), OnMapReadyCallback {
                 if (it.names.iso2 != null) {
                     countryViewModel.getFlag(it.names.iso2.lowercase(Locale.getDefault()))
                 }
+                countryViewModel.getImages(it.names.name)
 
                 country_name.text = it.names.name
                 country_full_name.text = it.names.full
@@ -96,6 +99,14 @@ class CountryFragment : DaggerFragment(), OnMapReadyCallback {
 
         countryViewModel.flag().observe(viewLifecycleOwner) {
             Sharp.loadString(it).into(flag_image_view)
+        }
+
+        countryViewModel.images().observe(viewLifecycleOwner) {
+            for(i in it) {
+                image_recycler_view.layoutManager =
+                    LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
+                image_recycler_view.adapter = ImageViewAdapter(it)
+            }
         }
 
         countryViewModel.exception().observe(

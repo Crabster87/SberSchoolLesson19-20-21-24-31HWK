@@ -1,5 +1,7 @@
 package crabster.rudakov.sberschoollesson19hwk.ui.main.view
 
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
@@ -37,6 +39,9 @@ class MainActivity : DaggerAppCompatActivity() {
         setContentView(R.layout.activity_main)
         navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         displayException()
+        if (!isNetworkAvailbale(applicationContext)) {
+            mainViewModel.setException(getString(R.string.no_internet))
+        }
     }
 
     /**
@@ -47,6 +52,12 @@ class MainActivity : DaggerAppCompatActivity() {
         mainViewModel.exception().observe(this, {
             Toast.makeText(this, it, Toast.LENGTH_LONG).show()
         })
+    }
+
+    fun  isNetworkAvailbale(context: Context):Boolean{
+        val conManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val internetInfo =conManager.activeNetworkInfo
+        return internetInfo!=null && internetInfo.isConnected
     }
 
 }

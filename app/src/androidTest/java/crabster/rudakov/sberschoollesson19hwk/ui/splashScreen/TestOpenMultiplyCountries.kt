@@ -13,6 +13,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import crabster.rudakov.sberschoollesson19hwk.R
+import crabster.rudakov.sberschoollesson19hwk.ui.main.view.MainActivity
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Description
@@ -32,7 +33,7 @@ class TestOpenMultiplyCountries {
 
     @Rule
     @JvmField
-    var mActivityTestRule = ActivityTestRule(SplashActivity::class.java)
+    var mActivityTestRule = ActivityTestRule(MainActivity::class.java)
 
     @Test
     fun testOpenMultiplyCountries() {
@@ -55,7 +56,6 @@ class TestOpenMultiplyCountries {
         val textView = onView(
             allOf(
                 withId(R.id.country_name), withText("Afghanistan"),
-                withParent(withParent(withId(R.id.nav_host_fragment))),
                 isDisplayed()
             )
         )
@@ -77,7 +77,6 @@ class TestOpenMultiplyCountries {
         val textView2 = onView(
             allOf(
                 withId(R.id.country_name), withText("Andorra"),
-                withParent(withParent(withId(R.id.nav_host_fragment))),
                 isDisplayed()
             )
         )
@@ -99,7 +98,6 @@ class TestOpenMultiplyCountries {
         val textView3 = onView(
             allOf(
                 withId(R.id.country_name), withText("Armenia"),
-                withParent(withParent(withId(R.id.nav_host_fragment))),
                 isDisplayed()
             )
         )

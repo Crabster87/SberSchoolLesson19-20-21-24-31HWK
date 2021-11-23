@@ -8,12 +8,12 @@ import android.os.Handler
 import android.os.Looper
 import android.view.WindowInsets
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
 import crabster.rudakov.sberschoollesson19hwk.R
 import crabster.rudakov.sberschoollesson19hwk.ui.main.view.MainActivity
+import dagger.android.support.DaggerAppCompatActivity
 
 @SuppressLint("CustomSplashScreen")
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : DaggerAppCompatActivity() {
 
     /**
      * Метод создаёт View 'SplashActivity', отображающееся с определённой

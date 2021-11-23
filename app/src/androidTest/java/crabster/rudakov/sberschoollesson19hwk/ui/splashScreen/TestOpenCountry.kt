@@ -12,6 +12,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import crabster.rudakov.sberschoollesson19hwk.R
+import crabster.rudakov.sberschoollesson19hwk.ui.main.view.MainActivity
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Description
@@ -31,7 +32,7 @@ class TestOpenCountry {
 
     @Rule
     @JvmField
-    var mActivityTestRule = ActivityTestRule(SplashActivity::class.java)
+    var mActivityTestRule = ActivityTestRule(MainActivity::class.java)
 
     @Test
     fun testOpenCountry() {
@@ -54,7 +55,6 @@ class TestOpenCountry {
         val textView = onView(
             allOf(
                 withId(R.id.country_name), withText("Afghanistan"),
-                withParent(withParent(withId(R.id.nav_host_fragment))),
                 isDisplayed()
             )
         )

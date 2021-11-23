@@ -26,20 +26,12 @@ interface AppComponent : AndroidInjector<App> {
     /**
      * Конструктор компонента
      * */
-    @Component.Builder
+    @Component.Factory
     interface Builder {
-
         /**
          * Метод привязывает экземпляр к типу Builder
          * */
-        @BindsInstance
-        fun application(application: Application): Builder
-
-        /**
-         * Метод возвращает компонент
-         * */
-        fun build(): AppComponent
-
+        fun create(@BindsInstance application: Application): AppComponent
     }
 
     /**

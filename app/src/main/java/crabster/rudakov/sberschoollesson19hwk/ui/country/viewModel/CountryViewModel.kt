@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import crabster.rudakov.sberschoollesson19hwk.data.model.CountryInfo
+import crabster.rudakov.sberschoollesson19hwk.data.model.Hits
 import crabster.rudakov.sberschoollesson19hwk.data.repository.RetrofitRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -14,13 +15,13 @@ import javax.inject.Inject
  * Класс View Model 2-ого экрана
  * */
 class CountryViewModel
-@Inject constructor() : ViewModel() {
+@Inject constructor(private val retrofitRepository: RetrofitRepository) : ViewModel() {
 
-    private var retrofitRepository = RetrofitRepository()
     private var countryInfo: MutableLiveData<CountryInfo> = MutableLiveData()
     private var exception: MutableLiveData<String> = MutableLiveData()
     private val coordinates: MutableLiveData<List<Float>> = MutableLiveData()
     private val flag: MutableLiveData<String> = MutableLiveData()
+    private val images: MutableLiveData<List<Hits>> = MutableLiveData()
 
     /**
      * Метод возвращает объект, хранящий информацию о стране
@@ -47,6 +48,10 @@ class CountryViewModel
      * */
     fun flag(): LiveData<String> {
         return flag
+    }
+
+    fun images(): LiveData<List<Hits>> {
+        return images
     }
 
     /**
@@ -98,6 +103,25 @@ class CountryViewModel
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 this.flag.value = it
+            }, {
+                exception.value = it.toString()
+            })
+    }
+
+    /**
+     * Метод единожды возвращает объект 'Single<ImageList>', полученный по
+     * переданному названию страны, обрабатывая исключения.
+     *
+     * @param country название страны
+     * @return Single<ImageList>
+     * */
+    @SuppressLint("CheckResult")
+    fun getImages(country: String) {
+        retrofitRepository.getImages(country)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                images.value = it.hits
             }, {
                 exception.value = it.toString()
             })

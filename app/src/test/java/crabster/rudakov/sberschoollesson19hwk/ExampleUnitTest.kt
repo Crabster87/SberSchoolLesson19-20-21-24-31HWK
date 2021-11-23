@@ -2,6 +2,8 @@ package crabster.rudakov.sberschoollesson19hwk
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import crabster.rudakov.sberschoollesson19hwk.data.model.CountryItem
+import crabster.rudakov.sberschoollesson19hwk.data.repository.RetrofitRepository
+import crabster.rudakov.sberschoollesson19hwk.ui.country.viewModel.CountryViewModel
 import crabster.rudakov.sberschoollesson19hwk.ui.list.viewModel.ListViewModel
 import crabster.rudakov.sberschoollesson19hwk.ui.main.viewModel.MainViewModel
 import io.reactivex.android.plugins.RxAndroidPlugins
@@ -16,7 +18,9 @@ class ExampleUnitTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val listViewModel = ListViewModel()
+    private val retrofitRepository = RetrofitRepository()
+    private val countryViewModel = CountryViewModel(retrofitRepository)
+    private val listViewModel = ListViewModel(retrofitRepository)
     private val mainViewModel = MainViewModel()
 
     @Before
@@ -69,6 +73,58 @@ class ExampleUnitTest {
         val country = mainViewModel.selectedCountry()
         println("$country")
         assert(country.value == "test1")
+    }
+
+    @Test
+    fun testSetCountryInfo() {
+        listViewModel.getCountryList()
+        Thread.sleep(3000)
+        mainViewModel.setCountryList(listViewModel.countryList().value!!)
+        val selectedCountry = listViewModel.countryList().value!![0]
+        println(selectedCountry.name)
+        mainViewModel.selectedCountry().value = selectedCountry.url
+        countryViewModel.getCountry(selectedCountry.url.split("/")[3])
+        Thread.sleep(3000)
+        val country = countryViewModel.countryInfo()
+        println("${country.value}")
+        assert(country.value?.names?.name == selectedCountry.name)
+    }
+
+
+    @Test
+    fun testGetFlag() {
+        countryViewModel.getFlag("ru")
+        Thread.sleep(3000)
+        val flag = countryViewModel.flag().value
+        println("$flag")
+        assert(flag != null)
+    }
+
+    @Test
+    fun testGetImages() {
+        countryViewModel.getImages("russia")
+        Thread.sleep(3000)
+        val images = countryViewModel.images().value
+        println("$images")
+        assert(images != null)
+    }
+
+    @Test
+    fun testBreakFlag() {
+        countryViewModel.getFlag("ERRORERROR")
+        Thread.sleep(3000)
+        val flag = countryViewModel.flag().value
+        println("$flag")
+        flag?.contains("html")?.let { assert(it) }
+    }
+
+    @Test
+    fun testBreakImages() {
+        countryViewModel.getFlag("ERRORERROR")
+        Thread.sleep(3000)
+        val images = countryViewModel.flag().value
+        println("$images")
+        images?.contains("html")?.let { assert(it) }
     }
 
 }

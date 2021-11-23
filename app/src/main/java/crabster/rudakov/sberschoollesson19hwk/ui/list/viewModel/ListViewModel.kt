@@ -14,9 +14,8 @@ import javax.inject.Inject
  * Класс View Model 1-ого экрана
  * */
 class ListViewModel
-@Inject constructor() : ViewModel() {
+@Inject constructor(private val retrofitRepository: RetrofitRepository) : ViewModel() {
 
-    private var retrofitRepository = RetrofitRepository()
     private var countryList: MutableLiveData<List<CountryItem>> = MutableLiveData()
     private var exception: MutableLiveData<String> = MutableLiveData()
 

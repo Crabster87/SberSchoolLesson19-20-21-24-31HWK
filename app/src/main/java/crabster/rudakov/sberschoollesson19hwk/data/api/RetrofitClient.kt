@@ -2,6 +2,7 @@ package crabster.rudakov.sberschoollesson19hwk.data.api
 
 import com.google.gson.GsonBuilder
 import crabster.rudakov.sberschoollesson19hwk.data.api.`interface`.RetrofitServices
+import crabster.rudakov.sberschoollesson19hwk.utils.Constants
 import crabster.rudakov.sberschoollesson19hwk.utils.Constants.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -36,11 +37,21 @@ object RetrofitClient {
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build()
 
+    private val retrofitImages = Retrofit.Builder()
+        .baseUrl(Constants.IMAGES_URL)
+        .addConverterFactory(GsonConverterFactory.create(gson))
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .build()
+
     /**
      * Создаётся объект, реализующий интерфейс 'RetrofitServices'
      * */
     val api: RetrofitServices by lazy {
         retrofit.create(RetrofitServices::class.java)
+    }
+
+    val apiImage: RetrofitServices by lazy {
+        retrofitImages.create(RetrofitServices::class.java)
     }
 
 }

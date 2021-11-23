@@ -1,6 +1,7 @@
 package crabster.rudakov.sberschoollesson19hwk.di.module
 
 import crabster.rudakov.sberschoollesson19hwk.ui.main.view.MainActivity
+import crabster.rudakov.sberschoollesson19hwk.ui.splashScreen.SplashActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -25,5 +26,8 @@ abstract class ActivityBuilderModule {
      * Данные модулей передаются в главный Component Dagger2 (AppComponent)
      * */
     abstract fun contributeMainActivity(): MainActivity
+
+    @ContributesAndroidInjector
+    abstract fun contributeSplashActivity(): SplashActivity
 
 }

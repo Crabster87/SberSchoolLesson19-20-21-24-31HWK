@@ -7,6 +7,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import crabster.rudakov.sberschoollesson19hwk.R
+import crabster.rudakov.sberschoollesson19hwk.ui.main.view.MainActivity
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Rule
 import org.junit.Test
@@ -22,7 +23,7 @@ class TestStartedApp {
 
     @Rule
     @JvmField
-    var mActivityTestRule = ActivityTestRule(SplashActivity::class.java)
+    var mActivityTestRule = ActivityTestRule(MainActivity::class.java)
 
     @Test
     fun testStartedApp() {
@@ -34,7 +35,6 @@ class TestStartedApp {
         val editText = onView(
             allOf(
                 withId(R.id.filter_edit_text), withText(""),
-                withParent(withParent(withId(R.id.nav_host_fragment))),
                 isDisplayed()
             )
         )

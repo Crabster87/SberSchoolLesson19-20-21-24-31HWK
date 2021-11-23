@@ -8,6 +8,7 @@ import android.widget.EditText
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import crabster.rudakov.sberschoollesson19hwk.R
 import crabster.rudakov.sberschoollesson19hwk.ui.main.factory.ViewModelFactory
 import crabster.rudakov.sberschoollesson19hwk.ui.list.adapter.IListItemListener
@@ -64,12 +65,16 @@ class ListFragment : DaggerFragment(), IListItemListener {
      * */
     private fun setObservers() {
         listViewModel.countryList().observe(viewLifecycleOwner) {
-            listAdapter = ListViewAdapter(it, this)
-            recycler_view.layoutManager = LinearLayoutManager(this.context)
-            recycler_view.adapter = listAdapter
-            mainViewModel.setCountryList(it)
-            mainViewModel.setProgress(true)
-            setFilterListener()
+            if (recycler_view.adapter == null) {
+                listAdapter = ListViewAdapter(it, this)
+                recycler_view.layoutManager = LinearLayoutManager(this.context)
+                recycler_view.adapter = listAdapter
+                mainViewModel.setCountryList(it)
+                mainViewModel.setProgress(true)
+                listAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+                setFilterListener()
+            }
+
         }
         listViewModel.exception().observe(
             viewLifecycleOwner
