@@ -42,19 +42,6 @@ class CountryViewModel
     }
 
     /**
-     * Метод возвращает флаг
-     *
-     * @return LiveData<String>
-     * */
-    fun flag(): LiveData<String> {
-        return flag
-    }
-
-    fun images(): LiveData<List<Hits>> {
-        return images
-    }
-
-    /**
      * Метод возвращает объект 'LiveData'
      *
      * @return LiveData<List<Float>>
@@ -64,8 +51,27 @@ class CountryViewModel
     }
 
     /**
+     * Метод возвращает флаг
+     *
+     * @return LiveData<String>
+     * */
+    fun flag(): LiveData<String> {
+        return flag
+    }
+
+    /**
+     * Метод возвращает список URL изображений
+     *
+     * @return LiveData<List<Hits>>
+     * */
+    fun images(): LiveData<List<Hits>> {
+        return images
+    }
+
+    /**
      * Метод единожды возвращает объект 'CountryInfo', полученный по
-     * переданному названию страны, обрабатывая исключения.
+     * переданному названию страны, отдельно сохраняя координаты страны
+     * и обрабатывая исключения.
      *
      * @param country название страны
      * @return Single<CountryInfo>

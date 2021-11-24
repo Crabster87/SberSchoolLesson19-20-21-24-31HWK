@@ -2,6 +2,7 @@ package crabster.rudakov.sberschoollesson19hwk.ui.country.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +27,7 @@ import javax.inject.Inject
 
 
 /**
- * Класс, хранящий логику отобржаения данных на 2-ом экране,
+ * Класс, хранящий логику отображения данных на 2-ом экране,
  * реализованном в виде фрагмента
  * */
 class CountryFragment : DaggerFragment(), OnMapReadyCallback {
@@ -62,10 +63,21 @@ class CountryFragment : DaggerFragment(), OnMapReadyCallback {
     }
 
     /**
-     * Метод получает данные у ViewModel по названию страны и производит
-     * наполнение всех View текущего фрагмента, обрабатывая исключения
-     *
+     * Метод получает данные у CountryViewModel:
+     * 1) по значению аттрибута 'name'(название страны), взятому из URL,
+     * получает название, полное название, координаты, язык, список соседей,
+     * координаты
      * @sample 'https://travelbriefing.org/Netherlands' -> Netherlands
+     *
+     * 2) по значению аттрибута 'iso2'(URL флага), взятому из URL, получает
+     * изображение флага в формате SVG, устанавливая его в ImageView с
+     * помощью библиотеки 'Pixplicity/sharp'
+     * @sample 'https://travelbriefing.org/sites/views/default/images/flags/4x3/ru.svg' -> ru
+     *
+     * 3) по значению аттрибута 'name'(название страны), взятому из URL,
+     * получает список изображений по стране
+     *
+     * Производит наполнение всех View текущего фрагмента, обрабатывая исключения
      * */
     private fun setObservers() {
         mainViewModel.selectedCountry().observe(viewLifecycleOwner) {
@@ -98,11 +110,15 @@ class CountryFragment : DaggerFragment(), OnMapReadyCallback {
         }
 
         countryViewModel.flag().observe(viewLifecycleOwner) {
-            Sharp.loadString(it).into(flag_image_view)
+            try {
+                Sharp.loadString(it).into(flag_image_view)
+            } catch (e: IllegalArgumentException) {
+                Log.d("FLAG", "DAMAGED FLAG IMAGE DETECTED")
+            }
         }
 
         countryViewModel.images().observe(viewLifecycleOwner) {
-            for(i in it) {
+            for (i in it) {
                 image_recycler_view.layoutManager =
                     LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
                 image_recycler_view.adapter = ImageViewAdapter(it)
@@ -135,7 +151,7 @@ class CountryFragment : DaggerFragment(), OnMapReadyCallback {
                 addMarker(
                     MarkerOptions()
                         .position(cord)
-                        .title("Marker in Sydney")
+                        .title("It's here!")
                 )
                 moveCamera(CameraUpdateFactory.newLatLng(cord))
             }

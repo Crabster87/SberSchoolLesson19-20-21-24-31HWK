@@ -10,8 +10,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 /**
- * Singleton объект, имеющий возможность подключения к указанному
- * внешнему API и наделённый функционалом по работе с полученными
+ * Singleton объект, имеющий возможность подключения к указанным
+ * внешним API и наделённый функционалом по работе с полученными
  * данными
  * */
 object RetrofitClient {
@@ -25,10 +25,11 @@ object RetrofitClient {
         .create()
 
     /**
-     * Создаётся объект класса 'Retrofit', принимающий заданный 'URL' и
-     * создающий фабрики для получения примитивов(строки) из запроса,
-     * для сериализации/десериализации объектов, для получения сущностей
-     * RxJava(Observable, Flowable, Single, Completable or Maybe)
+     * Для работы с запросами к API 'https://travelbriefing.org/'(получение
+     * данных по странам) создаётся объект класса 'Retrofit', принимающий
+     * заданный 'URL' и создающий фабрики для получения примитивов(строки)
+     * из запроса, для сериализации/десериализации объектов, для получения
+     * сущностей RxJava(Observable, Flowable, Single, Completable or Maybe)
      * */
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
@@ -37,6 +38,12 @@ object RetrofitClient {
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build()
 
+    /**
+     * Для работы с запросами к API 'https://pixabay.com/'(загрузка изображений)
+     * создаётся объект класса 'Retrofit', принимающий заданный 'URL' и создающий
+     * фабрики для сериализации/десериализации объектов, для получения сущностей
+     * RxJava(Observable, Flowable, Single, Completable or Maybe)
+     * */
     private val retrofitImages = Retrofit.Builder()
         .baseUrl(Constants.IMAGES_URL)
         .addConverterFactory(GsonConverterFactory.create(gson))
@@ -44,12 +51,17 @@ object RetrofitClient {
         .build()
 
     /**
-     * Создаётся объект, реализующий интерфейс 'RetrofitServices'
+     * Создаётся объект для работы с запросами к API 'https://travelbriefing.org/'
+     * (получение данных по странам), реализующий интерфейс 'RetrofitServices'
      * */
     val api: RetrofitServices by lazy {
         retrofit.create(RetrofitServices::class.java)
     }
 
+    /**
+     * Создаётся объект для работы с запросами к API 'https://pixabay.com/'
+     * (загрузка изображений), реализующий интерфейс 'RetrofitServices'
+     * */
     val apiImage: RetrofitServices by lazy {
         retrofitImages.create(RetrofitServices::class.java)
     }

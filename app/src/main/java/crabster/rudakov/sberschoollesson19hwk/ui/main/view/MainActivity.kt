@@ -39,7 +39,7 @@ class MainActivity : DaggerAppCompatActivity() {
         setContentView(R.layout.activity_main)
         navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         displayException()
-        if (!isNetworkAvailbale(applicationContext)) {
+        if (!isNetworkAvailable(applicationContext)) {
             mainViewModel.setException(getString(R.string.no_internet))
         }
     }
@@ -54,10 +54,11 @@ class MainActivity : DaggerAppCompatActivity() {
         })
     }
 
-    fun  isNetworkAvailbale(context: Context):Boolean{
-        val conManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val internetInfo =conManager.activeNetworkInfo
-        return internetInfo!=null && internetInfo.isConnected
+    private fun isNetworkAvailable(context: Context): Boolean {
+        val conManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val internetInfo = conManager.activeNetworkInfo
+        return internetInfo != null && internetInfo.isConnected
     }
 
 }

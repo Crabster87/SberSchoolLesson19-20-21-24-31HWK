@@ -5,7 +5,7 @@ package crabster.rudakov.sberschoollesson19hwk.data.model
  *
  * @param hits список URL
  * */
-data class ImageList (
+data class ImageList(
     val hits: List<Hits>?
 )
 
