@@ -2,6 +2,8 @@ package crabster.rudakov.sberschoollesson19hwk.ui.main.view
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
@@ -27,10 +29,9 @@ class MainActivity : DaggerAppCompatActivity() {
         ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
     }
 
-
     /**
      * Метод создаёт View активити, а также создаёт 'ViewModel' и навигацию
-     * между фрагментами
+     * между фрагментами, проверяя наличие интернет-соединения
      *
      * @param savedInstanceState ассоциативный массив-хранилище данных
      * */
@@ -39,7 +40,7 @@ class MainActivity : DaggerAppCompatActivity() {
         setContentView(R.layout.activity_main)
         navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         displayException()
-        if (!isNetworkAvailable(applicationContext)) {
+        if (!isNetworkAvailable()) {
             mainViewModel.setException(getString(R.string.no_internet))
         }
     }
@@ -54,11 +55,27 @@ class MainActivity : DaggerAppCompatActivity() {
         })
     }
 
-    private fun isNetworkAvailable(context: Context): Boolean {
-        val conManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val internetInfo = conManager.activeNetworkInfo
-        return internetInfo != null && internetInfo.isConnected
-    }
+    /**
+     * Метод наблюдает за возникновением Exception во 'ViewModel' и отправляет
+     * Toast-message в случае его возникновения
+     *
+     * @return boolean наличие или отсутствие интернет-соединения
+     * */
+    private fun isNetworkAvailable() =
+        @Suppress("DEPRECATION")
+        (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).run {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                getNetworkCapabilities(activeNetwork)?.run {
+                    hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                            || hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                            || hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+                } ?: false
+            } else {
+                val conManager =
+                    getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                val internetInfo = conManager.activeNetworkInfo
+                return internetInfo != null && internetInfo.isConnected
+            }
+        }
 
 }

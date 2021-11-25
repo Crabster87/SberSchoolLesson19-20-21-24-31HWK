@@ -20,6 +20,10 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_list.*
 import javax.inject.Inject
 
+/**
+ * Класс, хранящий логику отображения данных на 1-ом экране,
+ * реализованном в виде фрагмента
+ * */
 class ListFragment : DaggerFragment(), IListItemListener {
 
     private val mainActivity: MainActivity by lazy {
@@ -58,7 +62,7 @@ class ListFragment : DaggerFragment(), IListItemListener {
     }
 
     /**
-     * Метод получает список стран у ViewModel и передаёт его RecyclerView,
+     * Метод получает список стран у ViewModel и передаёт его в RecyclerView,
      * меняет статус прогресса выполнения загрузки, устанавливает слушатель
      * изменений в поле EditText, передаёт список стран и состояние прогресса
      * в MainViewModel, обрабатывая исключения
@@ -71,7 +75,8 @@ class ListFragment : DaggerFragment(), IListItemListener {
                 recycler_view.adapter = listAdapter
                 mainViewModel.setCountryList(it)
                 mainViewModel.setProgress(true)
-                listAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+                listAdapter.stateRestorationPolicy =
+                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
                 setFilterListener()
             }
 

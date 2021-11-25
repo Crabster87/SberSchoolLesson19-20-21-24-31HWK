@@ -151,7 +151,7 @@ class CountryFragment : DaggerFragment(), OnMapReadyCallback {
                 addMarker(
                     MarkerOptions()
                         .position(cord)
-                        .title("It's here!")
+                        .title(getString(R.string.map_marker))
                 )
                 moveCamera(CameraUpdateFactory.newLatLng(cord))
             }

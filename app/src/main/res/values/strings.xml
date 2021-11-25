@@ -13,4 +13,5 @@
     <string name="splash_screen_title">ТУРИСТИЧЕСКИЙ СПРАВОЧНИК</string>
 
     <string name="no_internet">Для работы необходимо интернет соединение</string>
+    <string name="map_marker">It\'s here!</string>
 </resources>

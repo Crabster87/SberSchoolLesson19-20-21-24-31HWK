@@ -9,8 +9,10 @@ import javax.inject.Provider
  * Класс-фабрика, создающий ViewModel
  * */
 class ViewModelFactory
-@Inject constructor(private val viewModelMap: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>) :
-    ViewModelProvider.Factory {
+@Inject constructor(
+    private val viewModelMap: Map<Class<out ViewModel>,
+            @JvmSuppressWildcards Provider<ViewModel>>
+) : ViewModelProvider.Factory {
 
     /**
      * Метод создаёт и возвращает ViewModel
